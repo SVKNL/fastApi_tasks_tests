@@ -1,17 +1,19 @@
 from src.schemas.user import CreateUserRequest
-from src.utils.unit_of_work import IUnitOfWork
+from src.api.v1.routers.dependencies import UOWDep
 
 
 class UsersService:
-    async def add_user(self, uow: IUnitOfWork, user: CreateUserRequest):
+    def __init__(self, unit_of_work: UOWDep):
+        self.uow = unit_of_work
+
+    async def add_user(self, user: CreateUserRequest):
         user_dict = user.model_dump()
-        async with uow:
-            user_id = await uow.user.add_one(user_dict)
-            await uow.commit()
+        async with self.uow:
+            user_id = await self.uow.user.add_one(user_dict)
             return user_id
 
-    async def get_users(self, uow: IUnitOfWork):
-        async with uow:
-            users = await uow.user.find_all()
+    async def get_users(self):
+        async with self.uow:
+            users = await self.uow.user.find_all()
             return users
 

@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 from enum import Enum
+
+from fastapi import Query
 
 
 class TaskStatus(str, Enum):
@@ -49,15 +51,10 @@ class TaskResponse(BaseModel):
 
 
 class TaskFilterSchema(BaseModel):
-    author_id: Optional[int] = None
-    assignee_id: Optional[int] = None
-    status: Optional[TaskStatus] = None
-    column_id: Optional[int] = None
-    sprint_id: Optional[int] = None
-    board_id: Optional[int] = None
-    group_id: Optional[int] = None
-    skip: int = 0
-    limit: int = 100
+    status: Optional[TaskStatus] = Query(None)
+    author_id: Optional[int] = Query(None)
+    assignee_id: Optional[int] = Query(None)
+
 
 class TaskListResponse(BaseModel):
     payload: List[TaskDB]

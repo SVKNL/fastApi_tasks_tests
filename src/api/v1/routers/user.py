@@ -15,7 +15,7 @@ async def add_user(
     user: CreateUserRequest,
     uow: UOWDep,
 ):
-    user_id = await UsersService().add_user(uow, user)
+    user_id = await UsersService(uow).add_user(user)
     return {"user_id": user_id}
 
 
@@ -23,5 +23,5 @@ async def add_user(
 async def get_users(
     uow: UOWDep,
 ):
-    users = await UsersService().get_users(uow)
+    users = await UsersService(uow).get_users()
     return users

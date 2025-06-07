@@ -2,8 +2,6 @@ from pydantic import BaseModel, Field
 
 
 
-
-
 class CreateUserRequest(BaseModel):
     full_name: str = Field(max_length=50)
     email: str = Field(max_length=50)

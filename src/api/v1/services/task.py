@@ -1,35 +1,37 @@
 from src.schemas.task import TaskCreateRequest, TaskDB, TaskUpdateRequest
-from src.utils.unit_of_work import IUnitOfWork
+from src.api.v1.routers.dependencies import UOWDep
 
 
 class TasksService:
-    async def add_task(self, uow: IUnitOfWork, task: TaskCreateRequest) -> TaskDB:
+    def __init__(self, unit_of_work: UOWDep):
+        self.uow = unit_of_work
+
+    async def add_task(self, task: TaskCreateRequest) -> TaskDB:
         tasks_dict = task.model_dump()
-        async with uow:
-            task_id = await uow.task.add_one(tasks_dict)
-            await uow.commit()
+        async with self.uow:
+            task_id = await self.uow.task.add_one(tasks_dict)
+            await self.uow.commit()
 
             return task_id
 
-    async def get_tasks(self, uow: IUnitOfWork):
-        async with uow:
-            tasks = await uow.task.find_all()
+    async def get_tasks(self, filter):
+        async with self.uow:
+            tasks = await self.uow.task.find_all(filter)
             return [task.to_schema() for task in tasks]
 
-    async def get_task(self, uow: IUnitOfWork, task_id):
-        async with uow:
-            task = await uow.task.get_one(task_id)
-            await uow.commit()
+    async def get_task(self, task_id):
+        async with self.uow:
+            task = await self.uow.task.get_one(task_id)
+            await self.uow.commit()
 
             return task.to_schema()
 
-    async def edit_task(self, uow: IUnitOfWork, task_id: int, task: TaskUpdateRequest):
+    async def edit_task(self, task_id: int, task: TaskUpdateRequest):
         tasks_dict = task.model_dump()
-        async with uow:
-            await uow.task.edit_one(task_id, tasks_dict)
-            await uow.commit()
+        async with self.uow:
+            await self.uow.task.edit_one(task_id, tasks_dict)
 
-    async def delete_task(self, uow: IUnitOfWork, task_id: int):
-        async with uow:
-            await uow.task.delete_one(task_id)
-            await uow.commit()
+
+    async def delete_task(self, task_id: int):
+        async with self.uow:
+            await self.uow.task.delete_one(task_id)
