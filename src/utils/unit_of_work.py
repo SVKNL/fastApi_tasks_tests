@@ -1,15 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import Type
 
 from src.database import async_session_maker
-
 from src.repositories.task import TaskRepository
 from src.repositories.user import UserRepository
 
 
 class IUnitOfWork(ABC):
-    user: Type[UserRepository]
-    task: Type[TaskRepository]
+    user: type[UserRepository]
+    task: type[TaskRepository]
 
     @abstractmethod
     def __init__(self):
@@ -32,20 +30,21 @@ class IUnitOfWork(ABC):
         ...
 
 
-class UnitOfWork:
+class UnitOfWork(IUnitOfWork):
     def __init__(self):
-        self.session = async_session_maker()
+        self.is_open = False
 
     async def __aenter__(self):
-        self.user = UserRepository(self.session)
-        self.task = TaskRepository(self.session)
+        self._session = async_session_maker()
+        self.user = UserRepository(self._session)
+        self.task = TaskRepository(self._session)
 
     async def __aexit__(self, *args):
-        await self.rollback()
-        await self.session.close()
+        await self.commit()
+        await self._session.close()
 
     async def commit(self):
-        await self.session.commit()
+        await self._session.commit()
 
     async def rollback(self):
-        await self.session.rollback()
+        await self._session.rollback()

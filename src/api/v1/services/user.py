@@ -1,9 +1,11 @@
+from fastapi import Depends
+
 from src.schemas.user import CreateUserRequest
-from src.api.v1.routers.dependencies import UOWDep
+from src.utils.unit_of_work import UnitOfWork
 
 
 class UsersService:
-    def __init__(self, unit_of_work: UOWDep):
+    def __init__(self, unit_of_work: UnitOfWork = Depends()):
         self.uow = unit_of_work
 
     async def add_user(self, user: CreateUserRequest):
@@ -12,8 +14,7 @@ class UsersService:
             user_id = await self.uow.user.add_one(user_dict)
             return user_id
 
-    async def get_users(self):
+    async def get_users(self, filter):
         async with self.uow:
-            users = await self.uow.user.find_all()
+            users = await self.uow.user.find_all(filter)
             return users
-

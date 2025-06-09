@@ -1,38 +1,13 @@
-from datetime import datetime, date
-from typing import Optional, Annotated
 import enum
+from datetime import date, datetime
 
-from sqlalchemy import (String,
-                        Text,
-                        ForeignKey,
-                        text)
-from sqlalchemy.orm import (relationship,
-                            mapped_column,
-                            Mapped, DeclarativeBase)
+from sqlalchemy import ForeignKey, String, Text, text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.schemas.task import TaskDB
 
-intpk = Annotated[int, mapped_column(primary_key=True)]
-created_at = Annotated[
-    datetime,
-    mapped_column(server_default=text("TIMEZONE('utc', now())"))
-]
-
-
-
-class Base(DeclarativeBase):
-    __abstract__ = True
-
-    repr_cols_num = 3
-    repr_cols = ()
-
-    def __repr__(self) -> str:
-        cols = []
-        for idx, col in enumerate(self.__table__.columns.keys()):
-            if col in self.repr_cols or idx < self.repr_cols_num:
-                cols.append(f'{col}={getattr(self, col)}')
-
-        return f'<{self.__class__.__name__} {", ".join(cols)}>'
+from .base import Base, intpk
+from .user import User
 
 
 class TaskStatus(enum.Enum):
@@ -67,31 +42,6 @@ class TaskExecutors(Base):
     )
 
 
-class User(Base):
-    __tablename__ = 'user'
-
-    id: Mapped[intpk]
-    full_name: Mapped[str] = mapped_column(
-        String(100),
-        nullable=False)
-    email: Mapped[str] = mapped_column(
-        String(120),
-        nullable=False,
-        unique=True)
-    created_at: Mapped[created_at]
-
-    watched_tasks: Mapped[list['Task']] = relationship(
-        'Task',
-        secondary='task_watchers',
-        back_populates='watchers'
-    )
-    executed_tasks: Mapped[list['Task']] = relationship(
-        'Task',
-        secondary='task_executors',
-        back_populates='executors'
-    )
-
-
 class Board(Base):
     __tablename__ = 'board'
 
@@ -102,7 +52,7 @@ class Board(Base):
         unique=True)
 
     columns = relationship('Column',
-                           back_populates='board'
+                           back_populates='board',
                            )
     tasks = relationship(
         'Task',
@@ -119,9 +69,9 @@ class Column(Base):
     board_id: Mapped[int] = mapped_column(
         ForeignKey(
             'board.id',
-            ondelete='CASCADE'
+            ondelete='CASCADE',
         ),
-        nullable=False
+        nullable=False,
     )
     board = relationship(
         'Board',
@@ -167,28 +117,28 @@ class Task(Base):
     title: Mapped[str] = mapped_column(
         String(255),
         nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(Text)
+    description: Mapped[str | None] = mapped_column(Text)
     status: Mapped[TaskStatus]
     created_at: Mapped[datetime] = mapped_column(
         server_default=text("TIMEZONE('utc', now())"),
-        index=True
+        index=True,
     )
     author_id: Mapped[int] = mapped_column(
         ForeignKey('user.id'),
         nullable=False)
-    assignee_id: Mapped[Optional[int]] = mapped_column(
+    assignee_id: Mapped[int | None] = mapped_column(
         ForeignKey('user.id'),
         nullable=True)
-    column_id: Mapped[Optional[int]] = mapped_column(
+    column_id: Mapped[int | None] = mapped_column(
         ForeignKey('column.id'),
         nullable=True)
-    sprint_id: Mapped[Optional[int]] = mapped_column(
+    sprint_id: Mapped[int | None] = mapped_column(
         ForeignKey('sprint.id'),
         nullable=True)
-    board_id: Mapped[Optional[int]] = mapped_column(
+    board_id: Mapped[int | None] = mapped_column(
         ForeignKey('board.id'),
         nullable=True)
-    group_id: Mapped[Optional[int]] = mapped_column(
+    group_id: Mapped[int | None] = mapped_column(
         ForeignKey('group.id'),
         nullable=True)
     column = relationship(
@@ -205,12 +155,12 @@ class Task(Base):
     watchers: Mapped[list['User']] = relationship(
         'User',
         secondary='task_watchers',
-        back_populates='watched_tasks'
+        back_populates='watched_tasks',
     )
     executors: Mapped[list['User']] = relationship(
         'User',
         secondary='task_executors',
-        back_populates='executed_tasks'
+        back_populates='executed_tasks',
     )
 
     def to_schema(self) -> TaskDB:

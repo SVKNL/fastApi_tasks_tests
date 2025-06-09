@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
 
+from fastapi import Query
+from pydantic import BaseModel, Field
 
 
 class CreateUserRequest(BaseModel):
@@ -17,5 +18,5 @@ class UserDB(BaseModel):
     email: str = Field(max_length=50)
 
 
-
-
+class UserFilterSchema(BaseModel):
+   id: int | None = Query(None)

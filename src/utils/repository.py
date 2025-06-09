@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
+from typing import Generic, TypeVar
 
-from sqlalchemy import insert, select, update, delete
+from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+
+from src.models.task import Base
 
 
 class AbstractRepository(ABC):
@@ -15,7 +17,10 @@ class AbstractRepository(ABC):
         raise NotImplementedError
 
 
-class SQLAlchemyRepository(AbstractRepository):
+M = TypeVar('M', bound=Base)
+
+
+class SQLAlchemyRepository(AbstractRepository, Generic[M]):
     model = None
 
     def __init__(self, session: AsyncSession):
@@ -66,4 +71,3 @@ class SQLAlchemyRepository(AbstractRepository):
             await self.session.execute(stmt)
             return True
         return False
-

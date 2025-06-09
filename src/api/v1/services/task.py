@@ -1,17 +1,17 @@
+from fastapi.params import Depends
+
 from src.schemas.task import TaskCreateRequest, TaskDB, TaskUpdateRequest
-from src.api.v1.routers.dependencies import UOWDep
+from src.utils.unit_of_work import UnitOfWork
 
 
 class TasksService:
-    def __init__(self, unit_of_work: UOWDep):
+    def __init__(self, unit_of_work: UnitOfWork = Depends()):
         self.uow = unit_of_work
 
     async def add_task(self, task: TaskCreateRequest) -> TaskDB:
         tasks_dict = task.model_dump()
         async with self.uow:
             task_id = await self.uow.task.add_one(tasks_dict)
-            await self.uow.commit()
-
             return task_id
 
     async def get_tasks(self, filter):
@@ -22,15 +22,12 @@ class TasksService:
     async def get_task(self, task_id):
         async with self.uow:
             task = await self.uow.task.get_one(task_id)
-            await self.uow.commit()
-
             return task.to_schema()
 
     async def edit_task(self, task_id: int, task: TaskUpdateRequest):
         tasks_dict = task.model_dump()
         async with self.uow:
             await self.uow.task.edit_one(task_id, tasks_dict)
-
 
     async def delete_task(self, task_id: int):
         async with self.uow:

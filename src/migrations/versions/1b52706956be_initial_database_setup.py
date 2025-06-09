@@ -5,17 +5,16 @@ Revises: 8559754b7a13
 Create Date: 2025-06-07 11:42:35.475647
 
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = '1b52706956be'
-down_revision: Union[str, None] = '8559754b7a13'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = '8559754b7a13'
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -25,20 +24,20 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
+    sa.UniqueConstraint('name'),
     )
     op.create_table('group',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
+    sa.UniqueConstraint('name'),
     )
     op.create_table('sprint',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('start_date', sa.Date(), nullable=False),
     sa.Column('end_date', sa.Date(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -46,14 +45,14 @@ def upgrade() -> None:
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
     )
     op.create_table('column',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('board_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['board_id'], ['board.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
     )
     op.create_table('task',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -67,13 +66,13 @@ def upgrade() -> None:
     sa.Column('sprint_id', sa.Integer(), nullable=True),
     sa.Column('board_id', sa.Integer(), nullable=True),
     sa.Column('group_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['assignee_id'], ['user.id'], ),
-    sa.ForeignKeyConstraint(['author_id'], ['user.id'], ),
-    sa.ForeignKeyConstraint(['board_id'], ['board.id'], ),
-    sa.ForeignKeyConstraint(['column_id'], ['column.id'], ),
-    sa.ForeignKeyConstraint(['group_id'], ['group.id'], ),
-    sa.ForeignKeyConstraint(['sprint_id'], ['sprint.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['assignee_id'], ['user.id']),
+    sa.ForeignKeyConstraint(['author_id'], ['user.id']),
+    sa.ForeignKeyConstraint(['board_id'], ['board.id']),
+    sa.ForeignKeyConstraint(['column_id'], ['column.id']),
+    sa.ForeignKeyConstraint(['group_id'], ['group.id']),
+    sa.ForeignKeyConstraint(['sprint_id'], ['sprint.id']),
+    sa.PrimaryKeyConstraint('id'),
     )
     op.create_index(op.f('ix_task_created_at'), 'task', ['created_at'], unique=False)
     op.create_table('task_executors',
@@ -81,14 +80,14 @@ def upgrade() -> None:
     sa.Column('task_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['task_id'], ['task.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('user_id', 'task_id')
+    sa.PrimaryKeyConstraint('user_id', 'task_id'),
     )
     op.create_table('task_watchers',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('task_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['task_id'], ['task.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('user_id', 'task_id')
+    sa.PrimaryKeyConstraint('user_id', 'task_id'),
     )
     # ### end Alembic commands ###
 

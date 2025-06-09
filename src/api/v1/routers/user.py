@@ -1,27 +1,28 @@
 from fastapi import APIRouter
+from fastapi.params import Depends
 
-from src.api.v1.routers.dependencies import UOWDep
-from src.schemas.user import CreateUserRequest
 from src.api.v1.services.user import UsersService
+from src.schemas.user import CreateUserRequest, UserFilterSchema
 
 router = APIRouter(
-    prefix="/users",
-    tags=["Users"],
+    prefix='/users',
+    tags=['Users'],
 )
 
 
-@router.post("")
+@router.post('')
 async def add_user(
     user: CreateUserRequest,
-    uow: UOWDep,
+    service: UsersService = Depends(),
 ):
-    user_id = await UsersService(uow).add_user(user)
-    return {"user_id": user_id}
+    user_id = await service.add_user(user)
+    return {'user_id': user_id}
 
 
-@router.get("")
+@router.get('')
 async def get_users(
-    uow: UOWDep,
+    filter: UserFilterSchema = Depends(),
+    service: UsersService = Depends(),
 ):
-    users = await UsersService(uow).get_users()
+    users = await service.get_users(filter)
     return users

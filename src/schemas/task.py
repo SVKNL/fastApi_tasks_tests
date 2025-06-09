@@ -1,9 +1,8 @@
 from datetime import datetime
-from typing import Optional, List
-from pydantic import BaseModel, Field
 from enum import Enum
 
 from fastapi import Query
+from pydantic import BaseModel, Field
 
 
 class TaskStatus(str, Enum):
@@ -14,36 +13,36 @@ class TaskStatus(str, Enum):
 
 class TaskCreateRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=255)
-    description: Optional[str] = None
+    description: str | None = None
     status: TaskStatus = TaskStatus.todo
     author_id: int
     assignee_id: int = None
-    column_id: Optional[int] = None
-    sprint_id: Optional[int] = None
-    board_id: Optional[int] = None
-    group_id: Optional[int] = None
-
+    column_id: int | None = None
+    sprint_id: int | None = None
+    board_id: int | None = None
+    group_id: int | None = None
 
 
 class TaskUpdateRequest(TaskCreateRequest):
     pass
 
 
-
-
-
-class TaskDB(TaskCreateRequest):
+class TaskID(BaseModel):
     id: int
-    description: Optional[str]
+
+
+class TaskDB(BaseModel):
+    id: int
+    description: str | None
     status: TaskStatus
     created_at: datetime
-    sprint_id: Optional[int]
-    group_id: Optional[int]
+    sprint_id: int | None
+    group_id: int | None
     title: str
     author_id: int
     assignee_id: int
-    column_id: Optional[int]
-    board_id: Optional[int]
+    column_id: int | None
+    board_id: int | None
 
 
 class TaskResponse(BaseModel):
@@ -51,14 +50,10 @@ class TaskResponse(BaseModel):
 
 
 class TaskFilterSchema(BaseModel):
-    status: Optional[TaskStatus] = Query(None)
-    author_id: Optional[int] = Query(None)
-    assignee_id: Optional[int] = Query(None)
+    status: TaskStatus | None = Query(None)
+    author_id: int | None = Query(None)
+    assignee_id: int | None = Query(None)
 
 
 class TaskListResponse(BaseModel):
-    payload: List[TaskDB]
-
-
-
-
+    payload: list[TaskDB]

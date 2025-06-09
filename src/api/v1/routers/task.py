@@ -1,20 +1,21 @@
 from fastapi import APIRouter, Depends
 
-from src.api.v1.routers.dependencies import UOWDep
-from src.schemas.task import (TaskCreateRequest,
-                              TaskUpdateRequest,
-                              TaskListResponse,
-                              TaskResponse,
-                              TaskFilterSchema)
 from src.api.v1.services.task import TasksService
+from src.schemas.task import (
+    TaskCreateRequest,
+    TaskFilterSchema,
+    TaskListResponse,
+    TaskResponse,
+    TaskUpdateRequest,
+)
 
 router = APIRouter(
-    prefix="/tasks",
-    tags=["Tasks"],
+    prefix='/tasks',
+    tags=['Tasks'],
 )
 
 
-@router.get("/")
+@router.get('/')
 async def get_tasks(
     filter: TaskFilterSchema = Depends(),
     service: TasksService = Depends(),
@@ -23,37 +24,38 @@ async def get_tasks(
     return TaskListResponse(payload=tasks)
 
 
-@router.get("/{id}")
+@router.get('/{id}')
 async def get_task(
     id: int,
-    uow: UOWDep
+    service: TasksService = Depends(),
 ):
-    task = await TasksService(uow).get_task(id)
+    task = await service.get_task(id)
     return TaskResponse(payload=task)
 
 
-@router.post("")
+@router.post('')
 async def add_task(
     task: TaskCreateRequest,
-    uow: UOWDep,
+    service: TasksService = Depends(),
 ):
-    task_id = await TasksService(uow).add_task(task)
-    return {"task_id": task_id}
+    task_id = await service.add_task(task)
+    return {'task_id': task_id}
 
 
-@router.patch("/{id}")
+@router.patch('/{id}')
 async def edit_task(
     id: int,
     task: TaskUpdateRequest,
-    uow: UOWDep,
+    service: TasksService = Depends(),
 ):
-    await TasksService(uow).edit_task(id, task)
-    return {"ok": True}
+    await service.edit_task(id, task)
+    return {'ok': True}
 
-@router.delete("/{id}")
+
+@router.delete('/{id}')
 async def delete_task(
         id: int,
-        uow: UOWDep,
+        service: TasksService = Depends(),
 ):
-    await TasksService(uow).delete_task(id)
-    return {"ok": True}
+    await service.delete_task(id)
+    return {'ok': True}
