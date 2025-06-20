@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from starlette import status
 
 from src.api.v1.services.task import TasksService
 from src.schemas.task import (
@@ -33,13 +34,13 @@ async def get_task(
     return TaskResponse(payload=task)
 
 
-@router.post('')
+@router.post('/', status_code=status.HTTP_201_CREATED)
 async def add_task(
     task: TaskCreateRequest,
     service: TasksService = Depends(),
 ):
     task_id = await service.add_task(task)
-    return {'task_id': task_id}
+    return {'payload': {'task_id': task_id}}
 
 
 @router.patch('/{id}')

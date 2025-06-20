@@ -5,22 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44d84b08-7370-4f62-b14a-5c5f12f113b4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/other.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/v1/routers/dependencies.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/v1/routers/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/v1/routers/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/v1/routers/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/v1/routers/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/v1/services/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/v1/services/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/v1/services/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/v1/services/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/schemas/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/unit_of_work.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/unit_of_work.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +50,7 @@
     &quot;Python.user.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/admin/PyCharmProjects/fastApi_tasks/src/migrations&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/admin/PyCharmProjects/fastApi_tasks&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -76,8 +61,8 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/migrations" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/migrations" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -147,7 +132,8 @@
       <updated>1749134997270</updated>
       <workItem from="1749135018610" duration="43841000" />
       <workItem from="1749461799731" duration="11000" />
-      <workItem from="1749461890896" duration="3897000" />
+      <workItem from="1749461890896" duration="6076000" />
+      <workItem from="1749819115537" duration="607000" />
     </task>
     <servers />
   </component>

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from types import TracebackType
 
 from src.database import async_session_maker
 from src.repositories.task import TaskRepository
@@ -38,10 +39,20 @@ class UnitOfWork(IUnitOfWork):
         self._session = async_session_maker()
         self.user = UserRepository(self._session)
         self.task = TaskRepository(self._session)
+        self.is_open = True
 
-    async def __aexit__(self, *args):
-        await self.commit()
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+        ) -> None:
+        if not exc_type:
+            await self._session.commit()
+        else:
+            await self.rollback()
         await self._session.close()
+        self.is_open = False
 
     async def commit(self):
         await self._session.commit()

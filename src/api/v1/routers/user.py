@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi.params import Depends
+from starlette import status
 
 from src.api.v1.services.user import UsersService
 from src.schemas.user import CreateUserRequest, UserFilterSchema
@@ -10,13 +11,13 @@ router = APIRouter(
 )
 
 
-@router.post('')
+@router.post('/', status_code=status.HTTP_201_CREATED)
 async def add_user(
     user: CreateUserRequest,
     service: UsersService = Depends(),
 ):
     user_id = await service.add_user(user)
-    return {'user_id': user_id}
+    return {'payload': {'user_id': user_id}}
 
 
 @router.get('')
